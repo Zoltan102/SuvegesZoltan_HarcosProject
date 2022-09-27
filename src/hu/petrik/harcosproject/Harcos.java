@@ -53,15 +53,15 @@ public class Harcos {
     }
 
     public int getSebzes() {
-        return alapSebzés;
+        return alapSebzés + szint;
     }
 
     public int getSzintlepeshez() {
-        //TODO
+        return 10 + (szint * 5);
     }
 
     public int getMaxEletero() {
-        //TODO
+        return alapEletero + (szint * 3);
     }
 
     public void megkuzd(Harcos masikHarcos) {
