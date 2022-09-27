@@ -1,6 +1,7 @@
 package hu.petrik.harcosproject;
 
 public class Harcos {
+    //Properties
     private String nev;
     private int szint;
     private int tapasztalat;
@@ -8,6 +9,7 @@ public class Harcos {
     private int alapEletero;
     private int alapSebzés;
 
+    //Constructor
     public Harcos(String nev, int statuszSablon) {
         this.nev = nev;
         this.szint = 1;
@@ -29,6 +31,7 @@ public class Harcos {
         this.eletero = getMaxEletero();
     }
 
+    //Get-Set
     public String getNev() {
         return nev;
     }
@@ -42,7 +45,9 @@ public class Harcos {
     }
 
     public void setSzint(int szint) {
-        this.szint = szint;
+        if (szint - this.szint == 1) {
+            this.szint = szint;
+        }
     }
 
     public int getTapasztalat() {
@@ -50,7 +55,13 @@ public class Harcos {
     }
 
     public void setTapasztalat(int tapasztalat) {
-        this.tapasztalat = tapasztalat;
+        if (tapasztalat >= getSzintlepeshez()) {
+            setSzint(szint + 1);
+            this.tapasztalat = tapasztalat - getSzintlepeshez();
+            setEletero(getMaxEletero());
+        } else {
+            this.tapasztalat = tapasztalat;
+        }
     }
 
     public int getAlapEletero() {
@@ -66,7 +77,14 @@ public class Harcos {
     }
 
     public void setEletero(int eletero) {
-        this.eletero = eletero;
+        if (eletero > getMaxEletero()) {
+            this.eletero = getMaxEletero();
+        } else if (eletero == 0) {
+            this.tapasztalat = 0;
+            this.eletero = eletero;
+        } else {
+            this.eletero = eletero;
+        }
     }
 
     public int getSebzes() {
@@ -81,14 +99,45 @@ public class Harcos {
         return alapEletero + (szint * 3);
     }
 
+    //Other methods
     public void megkuzd(Harcos masikHarcos) {
-        //TODO
+        if (masikHarcos.nev == this.nev) {
+            System.err.println("A két harcos ugyan az!");
+        } else if (masikHarcos.eletero == 0 || this.eletero == 0) {
+            System.err.println("Az egyik harcosnak nincs eletereje!");
+        } else {
+            for (int i = 0; i < this.getSebzes(); i++) {
+                if (masikHarcos.getEletero() > 0) {
+                    masikHarcos.setEletero(masikHarcos.eletero - 1);
+                }
+            }
+            if (masikHarcos.eletero > 0) {
+                for (int i = 0; i < masikHarcos.getSebzes(); i++) {
+                    if (this.getEletero() > 0) {
+                        this.setEletero(this.eletero - 1);
+                    }
+                }
+            }
+        }
+        if (masikHarcos.getEletero() > 0 && this.getEletero() > 0) {
+            masikHarcos.setTapasztalat(masikHarcos.tapasztalat + 5);
+            this.setTapasztalat(this.tapasztalat + 5);
+        } else if (masikHarcos.getEletero() == 0) {
+            this.setTapasztalat(tapasztalat + 15);
+        } else {
+            masikHarcos.setTapasztalat(masikHarcos.tapasztalat + 15);
+        }
     }
 
     public void gyogyul() {
-        //TODO
+        if (eletero == 0) {
+            setEletero(getMaxEletero());
+        } else {
+            setEletero(3 + szint);
+        }
     }
 
+    //toString
     @Override
     public String toString() {
         return String.format("{%s} - LVL:{%d} - EXP:{%d}/{%d} - HP:{%d}/{%d} - DMG:{%d}",
